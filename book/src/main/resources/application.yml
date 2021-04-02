@@ -1,0 +1,54 @@
+debug: false
+
+server:
+  port: 8082
+  servlet:
+    context-path: /book
+
+spring:
+  application:
+    name: book
+  freemarker:
+    template-loader-path: classpath:/templates/
+    prefer-file-system-access: false
+
+eureka:
+  instance:
+    status-page-url-path: ${server.servlet.context-path}/info
+    health-check-url-path: ${server.servlet.context-path}/health
+    lease-expiration-duration-in-seconds: 60
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+
+
+user:
+  ribbon:
+    ConnectTimeout: 2000
+    ReadTimeout: 15000
+    OkToRetryOnAllOperations: true
+
+    MaxAutoRetries: 0
+    MaxAutoRetriesNextServer: 0
+    NFLoadBalancerRuleClassName: com.netflix.loadbalancer.RoundRobinRule
+
+feign:
+  circuitbreaker:
+    enabled: true
+  compression:
+    request:
+      enabled: true
+    response:
+      enabled: true
+
+logging:
+  level:
+    com.example.book.feign.AuthorFeignClient: debug
+
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          thread:
+            timeoutInMilliseconds: 15000
